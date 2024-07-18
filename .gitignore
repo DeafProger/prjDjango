@@ -1,7 +1,5 @@
 /venv/
 .idea/
-__pycache__/
-first/first/__pycache__/
-first/catalog/__pycache__/
-first/catalog/migrations/__pycache__/
+**/__pycache__/**
+**/config.py
 
