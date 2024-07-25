@@ -21,7 +21,7 @@ from . import views
 app_name = 'catalog'
 
 urlpatterns = [
-    path('contact/', views.contact),
-    path('catalog/', views.index),
-    path('', views.home),
+    path('', views.product_list, name='product_list'),
+    path('catalog/<int:pk>/', views.product_detail, name='product_detail'),
+    path('contacts/', views.contacts, name='contacts'),
 ]

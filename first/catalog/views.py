@@ -1,29 +1,18 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-# Create your views here.
+from django.shortcuts import render, get_object_or_404
+from .models import Product
 
 
-def home(request):
-    return render(request, 'home.html')
+def product_list(request):
+    products = Product.objects.all()
+    context = {'products': products}
+    return render(request, 'product_list.html', context)
 
 
-def contact(request):
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    context = {'product': product}
+    return render(request, 'product_detail.html', context)
+
+
+def contacts(request):
     return render(request, 'contact.html')
-
-
-def index(request):
-    output = f'''
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>{request}</title>
-</head>
-<body>
-    <div class="uk-container">
-        <p>Explore our products and find what you're looking for.</p>
-    </div>
-</body>
-</html>
-    '''
-    return HttpResponse(output)
