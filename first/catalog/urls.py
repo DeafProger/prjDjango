@@ -16,12 +16,18 @@ Including another URLconf
 """
 
 from django.urls import path
-from . import views
+from .views import ProductListView, ContactsView, ProductDetailView, \
+    BlogListView, BlogCreateView, BlogDetailView, BlogDeleteView, BlogUpdateView
 
 app_name = 'catalog'
 
 urlpatterns = [
-    path('', views.product_list, name='product_list'),
-    path('catalog/<int:pk>/', views.product_detail, name='product_detail'),
-    path('contacts/', views.contacts, name='contacts'),
+    path('', ProductListView.as_view(), name='product_list'),
+    path('catalog/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
+    path('contacts/', ContactsView.as_view(), name='contacts'),
+    path('blog/', BlogListView.as_view(), name='blog_list'),
+    path('blog/blog_form/', BlogCreateView.as_view(), name='blog_form'),
+    path('blog/blog_detail/<int:pk>/', BlogDetailView.as_view(), name='blog_detail'),
+    path('blog/blog_delete/<int:pk>/', BlogDeleteView.as_view(), name='blog_delete'),
+    path('blog/blog_update/<int:pk>/', BlogUpdateView.as_view(), name='blog_update'),
 ]
