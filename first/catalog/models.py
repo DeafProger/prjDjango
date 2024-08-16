@@ -51,9 +51,11 @@ class Product(models.Model):
         help_text='Введите цену продукта'
     )
     created_at = models.DateTimeField(
+        auto_now_add=True,
         verbose_name='Дата создания записи в БД'
     )
     updated_at = models.DateTimeField(
+        auto_now=True,
         verbose_name='Дата последнего изменения записи в БД',
     )
     # uncomment and comment following lines for migration and back to 0001
@@ -89,3 +91,42 @@ class Blog(models.Model):
         verbose_name = 'Статья'
         verbose_name_plural = 'Статьи'
         ordering = ('title', 'content')
+
+
+class Version(models.Model):
+    product = models.ForeignKey(
+        Product,
+        related_name="versions",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Продукт",
+        help_text="Выберите продукт",
+    )
+    version_number = models.CharField(
+        max_length=10,
+        null=True,
+        blank=True,
+        verbose_name="Номер версии",
+        help_text="Введите номер версии",
+    )
+    version_name = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name="Название версии",
+        help_text="Введите название версии",
+    )
+    is_version_active = models.BooleanField(
+        default=False,
+        verbose_name="Активная версия",
+        help_text="Является ли версия активной?",
+    )
+
+    class Meta:
+        verbose_name = "Версия"
+        verbose_name_plural = "Версии"
+        ordering = ["version_number", "version_name"]
+
+    def __str__(self):
+        return self.version_name

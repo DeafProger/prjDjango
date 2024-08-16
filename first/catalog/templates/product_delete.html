@@ -1,0 +1,19 @@
+{% extends 'home.html' %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center">
+    <form class="row" method="post" enctype="multipart/form-data">
+        <div class="col-md-12">
+            <div class="text-center">
+                <p class="h3" style="height: auto">Вы действительно хотите удалить {{ object.name }}?</p>
+                <div class="card-body">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                    <a class="btn btn-primary" href="{% url 'catalog:product_list' %}" role="button">Назад</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+{% endblock %}

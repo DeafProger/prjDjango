@@ -16,7 +16,8 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import ProductListView, ContactsView, ProductDetailView, \
+from .views import ProductListView, ContactsView, ProductDetailView, ProductCreateView, \
+    ProductDeleteView, ProductUpdateView, \
     BlogListView, BlogCreateView, BlogDetailView, BlogDeleteView, BlogUpdateView
 
 app_name = 'catalog'
@@ -24,7 +25,12 @@ app_name = 'catalog'
 urlpatterns = [
     path('', ProductListView.as_view(), name='product_list'),
     path('catalog/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
+    path('create/', ProductCreateView.as_view(), name='product_form'),
+    path('product/<int:pk>/delete/', ProductDeleteView.as_view(), name='product_delete'),
+    path('product/<int:pk>/update/', ProductUpdateView.as_view(), name='product_update'),
+
     path('contacts/', ContactsView.as_view(), name='contacts'),
+
     path('blog/', BlogListView.as_view(), name='blog_list'),
     path('blog/blog_form/', BlogCreateView.as_view(), name='blog_form'),
     path('blog/blog_detail/<int:pk>/', BlogDetailView.as_view(), name='blog_detail'),
