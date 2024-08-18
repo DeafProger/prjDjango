@@ -11,6 +11,21 @@ class ProductListView(ListView):
     template_name = 'product_list.html'
     model = Product
 
+    def get_context_data(self, **kwargs):
+        """Метод для вывода названия версии если она активна"""
+        context_data = super().get_context_data(**kwargs)
+        version_dict = {}
+        # Запускаю цикл по моделям Product и сразу запускаю цикл по моделям Version, далее алгоритм проверят что модель
+        # Version активная и если он видит что она привязана к продукту, то добавляет в словарь номер продукта и его
+        # активную версию
+        for product in Product.objects.all():
+            for version in Version.objects.all():
+                if version.is_version_active:
+                    if version.product_id == int(product.pk):
+                        version_dict[version.product_id] = version.version_name
+        context_data['versions'] = version_dict
+        return context_data
+
 
 class ProductDetailView(DetailView):
     template_name = 'product_detail.html'

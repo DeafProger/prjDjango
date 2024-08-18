@@ -20,7 +20,15 @@
                                 <a class="btn btn-outline-primary" href="{% url 'catalog:product_update' product.pk %}" role="button">Изменить</a>
                                 <a class="btn btn-outline-primary" href="{% url 'catalog:product_delete' product.pk %}" role="button">Удалить</a>
                             </div>
+                            
                         </div>
+                        <small class="text-body-secondary">
+                            {% for v in versions.items %}
+                            {% if v.0 == product.pk %}
+                                {{ v.1 }}
+                            {% endif %}
+                        {% endfor %}
+                        </small>
                     </div>
                 </div>
             </div>
