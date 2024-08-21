@@ -11,7 +11,7 @@
             <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                 <li>{{ object.content }}</li>
             </ul>
-            <a class="btn btn-primary" href="{% url 'catalog:blog_list' %}" role="button">Назад</a>
+            <a class="btn btn-primary" href="{% url 'blog:blog_list' %}" role="button">Назад</a>
         </div>
         <div class="card-footer">
             Просмотры {{object.views_count}}
