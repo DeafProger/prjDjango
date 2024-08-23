@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 
 class Category(models.Model):
@@ -66,6 +67,14 @@ class Product(models.Model):
         null=True
     )
     """
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name="Владелец",
+        null=True, blank=True,
+        related_name='users',  # "products",
+    )
+
 
     class Meta:
         verbose_name = 'Продукт'

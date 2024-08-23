@@ -1,13 +1,16 @@
 from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
 from .forms import ProductForm, VersionForm
 from .models import Product, Version
+from users.models import User
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     template_name = 'product_list.html'
     model = Product
 
@@ -27,12 +30,12 @@ class ProductListView(ListView):
         return context_data
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     template_name = 'product_detail.html'
     model = Product
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = 'product_form.html'
     model = Product
     form_class = ProductForm
@@ -42,11 +45,12 @@ class ProductCreateView(CreateView):
         if form.is_valid():
             new_product = form.save()
             new_product.slug = slugify(new_product.name)
+            new_product.owner = self.request.user  # new line
             new_product.save()
         return super().form_valid(form)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'product_form.html'
     model = Product
     form_class = ProductForm
@@ -76,7 +80,7 @@ class ProductUpdateView(UpdateView):
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'product_delete.html'
     model = Product
     success_url = reverse_lazy('catalog:product_list')
@@ -84,3 +88,10 @@ class ProductDeleteView(DeleteView):
 
 class ContactsView(TemplateView):
     template_name = 'contact.html'
+
+'''
+            if product.owner != self.request.user:
+                #context_data.pop(product)
+                print(context_data['product_list'])
+                print(context_data['object_list'])
+'''

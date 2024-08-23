@@ -9,6 +9,7 @@
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% for product in object_list %}
+            {% if product.owner == user %}
             <div class="col">
                 <div class="card shadow-sm">
                     <img src="{{ product.image | media_filter }}" class="fixed-size-image">
@@ -23,15 +24,19 @@
                             
                         </div>
                         <small class="text-body-secondary">
+                            {{ product.owner }}
+                        </small>
+                        <small class="text-body-secondary">
                             {% for v in versions.items %}
-                            {% if v.0 == product.pk %}
-                                {{ v.1 }}
-                            {% endif %}
-                        {% endfor %}
+                                {% if v.0 == product.pk %}
+                                    {{ v.1 }}
+                                {% endif %}
+                            {% endfor %}
                         </small>
                     </div>
                 </div>
             </div>
+            {% endif %}
             {% endfor %}
         </div>
     </div>

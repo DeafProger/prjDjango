@@ -18,6 +18,7 @@ Including another URLconf
 from django.urls import path
 from .views import ProductListView, ContactsView, ProductDetailView, ProductCreateView, \
     ProductDeleteView, ProductUpdateView
+from django.contrib.auth.decorators import login_required
 
 app_name = 'catalog'
 

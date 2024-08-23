@@ -25,5 +25,7 @@ app_name = 'catalog'
 urlpatterns = [
     path('', include('catalog.urls')),
     path('blog/', include('blog.urls')),
+    path('users/', include('users.urls', namespace="users")),
     path('admin/', admin.site.urls),
+    path('accounts/', include('users.urls', namespace="users")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
