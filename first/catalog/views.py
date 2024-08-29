@@ -2,10 +2,11 @@ from django.views.generic import TemplateView, ListView, DetailView, \
     CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, ModelForm
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
-from .forms import ProductForm, VersionForm
+from .forms import ProductForm, VersionForm, StyleFormMixin
 from .models import Product, Version
 from users.models import User
 
@@ -29,10 +30,35 @@ class ProductListView(LoginRequiredMixin, ListView):
         context_data['versions'] = version_dict
         return context_data
 
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
     template_name = 'product_detail.html'
     model = Product
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        ProductFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            context_data['formset'] = ProductFormset(self.request.POST)
+        else:
+            context_data['formset'] = ProductFormset()
+        return context_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -79,19 +105,33 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
+    def get_form_class(self):
+        user = self.request.user
+        user.save()
+        if user == self.object.owner:
+            return ProductForm
+        if user.has_perm('catalog.can_edit_product_description') and user.has_perm('catalog.can_edit_product_category') and user.has_perm('catalog.can_cancel_publication'):
+            return ProductModeratorForm
+        raise PermissionDenied
+
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'product_delete.html'
     model = Product
     success_url = reverse_lazy('catalog:product_list')
 
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return ProductForm
+        raise PermissionDenied
+
+
+class ProductModeratorForm(StyleFormMixin, ModelForm):
+    class Meta:
+        model = Product
+        fields = ('description', 'category', 'is_published')
+
 
 class ContactsView(TemplateView):
     template_name = 'contact.html'
-
-'''
-            if product.owner != self.request.user:
-                #context_data.pop(product)
-                print(context_data['product_list'])
-                print(context_data['object_list'])
-'''
