@@ -18,13 +18,13 @@ Including another URLconf
 from django.urls import path
 from .views import ProductListView, ContactsView, ProductDetailView, ProductCreateView, \
     ProductDeleteView, ProductUpdateView
-from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_page
 
 app_name = 'catalog'
 
 urlpatterns = [
     path('', ProductListView.as_view(), name='product_list'),
-    path('catalog/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
+    path('catalog/<int:pk>/', cache_page(60)(ProductDetailView.as_view()), name='product_detail'),
     path('create/', ProductCreateView.as_view(), name='product_form'),
     path('product/<int:pk>/delete/', ProductDeleteView.as_view(), name='product_delete'),
     path('product/<int:pk>/update/', ProductUpdateView.as_view(), name='product_update'),
