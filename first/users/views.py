@@ -6,6 +6,7 @@ from django.views.generic import CreateView
 from django.core.mail import send_mail
 from .forms import UserRegisterForm
 import os, secrets, random, string
+from first.settings import EMAIL_HOST_USER
 from django.views import View
 from .models import User
 
@@ -26,7 +27,7 @@ class UserCreateView(CreateView):
         send_mail(
             subject='Подтверждение почты',
             message=f'Здравствуйте! Перейдите, пожалуйста, по ссылке для подтверждения почты {url}',
-            from_email=os.environ['email'],
+            from_email=EMAIL_HOST_USER,
             recipient_list=[user.email],
         )
         return super().form_valid(form)
@@ -54,7 +55,7 @@ class PasswordResetView(View):
                 send_mail(
                     subject="Восстановление пароля",
                     message=f"Ваш новый пароль: {new_password}",
-                    from_email=os.environ['email'],
+                    from_email=EMAIL_HOST_USER,
                     recipient_list=[email],
                 )
                 return redirect(reverse("users:login"))
