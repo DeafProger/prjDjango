@@ -1,5 +1,5 @@
 from django.core.cache import cache
-from .models import Product
+from .models import Category, Product
 
 
 def get_products_from_cache():
@@ -14,3 +14,14 @@ def get_products_from_cache():
         products = Product.objects.all()
         cache.set(products, key)
         return products
+
+
+def get_categories_from_cache():
+    """Получаем категории из кэша, если кэш пуст, получаем данные из БД."""
+    key = "categories_list"
+    categories = cache.get(key)
+    if categories is not None:
+        return categories
+    categories = Category.objects.all()
+    cache.set(key, categories)
+    return categories

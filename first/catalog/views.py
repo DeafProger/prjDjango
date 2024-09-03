@@ -6,8 +6,8 @@ from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
 from .forms import ProductForm, VersionForm, StyleFormMixin
-from .services import get_products_from_cache
-from .models import Product, Version
+from .services import get_products_from_cache, get_categories_from_cache
+from .models import Product, Category, Version
 from users.models import User
 
 
@@ -41,6 +41,15 @@ class ProductListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         """Метод для получения кэша всех продуктов"""
         return get_products_from_cache()
+
+
+class CategoryListView(LoginRequiredMixin, ListView):
+    template_name = 'category_list.html'
+    model = Category
+
+    def get_queryset(self):
+        """Метод для получения кэша всех продуктов"""
+        return get_categories_from_cache()
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
