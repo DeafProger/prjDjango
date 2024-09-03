@@ -48,7 +48,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
 
     def get_queryset(self):
-        """Метод для получения кэша всех продуктов"""
+        """Метод для получения кэша всех категорий"""
         return get_categories_from_cache()
 
 
